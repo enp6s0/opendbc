@@ -89,7 +89,12 @@ def main(joystick):
       CC.actuators.torque = float(np.clip(joystick.axes_values['steer'], -1, 1))
       pprint(CC)
 
-      p.read()
+      # Force controls to be on
+      CS = p.read()
+      CC.enabled = True     # CS.cruiseState.enabled
+      CC.latActive = True   # CS.cruiseState.enabled and not CS.steeringPressed
+      CC.longActive = True  # CS.cruiseState.enabled and not CS.brakePressed
+
       p.write(CC)
 
       # 100Hz
