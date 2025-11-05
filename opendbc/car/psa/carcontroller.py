@@ -35,7 +35,7 @@ class CarController(CarControllerBase):
 
       self.apply_angle_last = apply_angle
 
-    new_actuators = actuators.as_builder()
+    new_actuators = actuators
     new_actuators.steeringAngleDeg = self.apply_angle_last
     self.frame += 1
     return new_actuators, can_sends

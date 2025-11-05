@@ -194,7 +194,7 @@ class CarController(CarControllerBase):
     self.steer_alert_last = steer_alert
     self.lead_distance_bars_last = hud_control.leadDistanceBars
 
-    new_actuators = actuators.as_builder()
+    new_actuators = actuators
     new_actuators.curvature = self.apply_curvature_last
     new_actuators.accel = self.accel
     new_actuators.gas = self.gas
