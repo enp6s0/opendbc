@@ -20,7 +20,12 @@ class PandaRunner(AbstractContextManager):
     safety_model = self.CI.CP.safetyConfigs[0].safetyModel
     self.p.set_safety_mode(CarParams.SafetyModel.elm327, 1)
     self.CI.init(self.CI.CP, self._can_recv, self.p.can_send_many)
-    self.p.set_safety_mode(safety_model, self.CI.CP.safetyConfigs[0].safetyParam)
+    self.p.set_safety_mode(safety_model.raw, self.CI.CP.safetyConfigs[0].safetyParam)
+    
+    # Startup counter
+    # (apparently the read function tries to check validity of the CAN messages way too quickly, resulting
+    # in missed messages and a crash of the Panda runner)
+    self.startup_counter = 0
 
     return self
 
@@ -41,7 +46,8 @@ class PandaRunner(AbstractContextManager):
 
   def read(self, strict: bool = True):
     cs = self.CI.update([int(time.monotonic()*1e9), self._can_recv()[0]])
-    if strict:
+    self.startup_counter += 1
+    if strict and self.startup_counter > 10:
       assert cs.canValid, "CAN went invalid, check connections"
     return cs
 
